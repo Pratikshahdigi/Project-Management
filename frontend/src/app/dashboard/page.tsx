@@ -1080,7 +1080,7 @@ export default function Dashboard() {
         setRecognitionInstance(rec);
       }
     }
-  }, [isVoiceEnabled]);
+  }, []);
 
   const toggleVoiceControl = () => {
     if (!recognitionInstance) {
@@ -1965,7 +1965,7 @@ export default function Dashboard() {
         <div className="absolute bottom-0 left-0 w-[30%] h-[30%] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
 
         {/* Global Toolbar Header */}
-        <header className="h-16 border-b border-glassBorder bg-zinc-950/40 backdrop-blur-md flex items-center justify-between px-8 z-10 shrink-0">
+        <header className="h-16 border-b border-glassBorder bg-zinc-950/40 backdrop-blur-md flex items-center justify-between px-8 z-40 shrink-0">
           <div className="flex items-center space-x-4">
             <h2 className="text-sm font-black uppercase tracking-widest text-zinc-100">
               {activeTab === 'overview' && 'CEO Command Center'}
@@ -2308,64 +2308,168 @@ export default function Dashboard() {
                 </button>
               </div>
 
-              {/* Kanban Column Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {['Todo', 'In_Progress', 'In_Review', 'Completed'].map(col => {
-                  const columnTasks = tasks.filter(t => t.status === col);
+              {/* ClickUp-style Tasks List Dashboard */}
+              <div className="space-y-8 text-xs text-left bg-zinc-950 p-6 rounded-3xl border border-glassBorder">
+                {[
+                  { 
+                    label: 'COMPLETE', 
+                    statusVal: ['Completed'], 
+                    color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5', 
+                    bullet: 'bg-emerald-400' 
+                  },
+                  { 
+                    label: 'IN PROGRESS', 
+                    statusVal: ['In_Progress', 'In_Review'], 
+                    color: 'text-sky-400 border-sky-500/20 bg-sky-500/5', 
+                    bullet: 'bg-sky-400' 
+                  },
+                  { 
+                    label: 'TO DO', 
+                    statusVal: ['Todo'], 
+                    color: 'text-zinc-400 border-zinc-800 bg-zinc-900/30', 
+                    bullet: 'bg-zinc-500' 
+                  }
+                ].map(group => {
+                  const groupTasks = tasks.filter(t => group.statusVal.includes(t.status));
                   return (
-                    <div key={col} className="bg-zinc-950/50 p-4 rounded-2xl border border-glassBorder min-h-[300px]">
-                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-800">
-                        <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">{col.replace('_', ' ')}</span>
-                        <span className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full font-bold">{columnTasks.length}</span>
+                    <div key={group.label} className="space-y-3">
+                      
+                      {/* Header Group Banner */}
+                      <div className="flex items-center space-x-2 pb-2 border-b border-zinc-800/80">
+                        <span className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg border font-black uppercase text-[10px] tracking-wider ${group.color}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${group.bullet} animate-pulse`} />
+                          <span>{group.label}</span>
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-bold font-mono">{groupTasks.length} tasks</span>
                       </div>
 
-                      <div className="space-y-3">
-                        {columnTasks.map(task => (
-                          <div key={task.id} className="p-4 rounded-xl border border-glassBorder bg-[#14141c] hover:border-violet-500/40 transition-all space-y-3">
-                            <div className="flex items-start justify-between">
-                              <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                                task.priority === 'Urgent' ? 'bg-rose-500/20 text-[#f43f5e] border border-rose-500/30' : 'bg-zinc-800 text-zinc-400'
-                              }`}>
-                                {task.priority}
-                              </span>
-                              <span className="text-[9px] text-zinc-500 font-bold">{task.client.substring(0, 10)}...</span>
-                            </div>
-                            
-                            <h4 className="text-sm font-bold text-zinc-200">{task.title}</h4>
+                      {/* Tasks List Table */}
+                      <div className="overflow-hidden">
+                        {groupTasks.length === 0 ? (
+                          <div className="py-4 pl-4 text-zinc-600 italic text-[11px]">No tasks in this group</div>
+                        ) : (
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider text-left border-b border-zinc-900/40">
+                                <th className="pb-2 font-normal pl-4">Name</th>
+                                <th className="pb-2 font-normal">Assignee</th>
+                                <th className="pb-2 font-normal">Due Date</th>
+                                <th className="pb-2 font-normal">Priority</th>
+                                <th className="pb-2 font-normal">Status</th>
+                                <th className="pb-2 font-normal text-right pr-4">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-900/30">
+                              {groupTasks.map(task => {
+                                // Extract initials from assignee name
+                                const names = task.assignee.split(' ');
+                                const initials = names.map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
+                                
+                                return (
+                                  <tr 
+                                    key={task.id} 
+                                    onClick={() => setSelectedNotificationTask(task)}
+                                    className="hover:bg-zinc-900/30 cursor-pointer transition-all text-zinc-300 group"
+                                  >
+                                    {/* Task Name */}
+                                    <td className="py-3 font-semibold text-zinc-100 flex items-center space-x-3 pl-4">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-700 group-hover:bg-violet-400 transition-colors" />
+                                      <span className="text-xs group-hover:text-violet-300 transition-colors">{task.title}</span>
+                                    </td>
 
-                            <div className="flex items-center justify-between pt-2 border-t border-zinc-900/60 text-[10px] text-zinc-400">
-                              <span className="font-semibold text-zinc-300">{task.assignee}</span>
-                              <span className="text-violet-400 font-bold">{task.workflow}</span>
-                            </div>
+                                    {/* Assignee Badge */}
+                                    <td className="py-3">
+                                      <div className="flex items-center space-x-2">
+                                        <div className="w-6 h-6 rounded-full bg-rose-600 flex items-center justify-center text-[10px] font-black text-white" title={task.assignee}>
+                                          {initials}
+                                        </div>
+                                        <span className="text-[11px] text-zinc-400">{task.assignee}</span>
+                                      </div>
+                                    </td>
 
-                            {task.status === 'In_Review' && (
-                              <button 
-                                onClick={async () => {
-                                  try {
-                                    const res = await fetch(`http://localhost:3001/api/v1/tasks/${task.id}`, {
-                                      method: 'PUT',
-                                      headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': `Bearer ${token}`
-                                      },
-                                      body: JSON.stringify({ status: 'Completed', workflow: 'Published' })
-                                    });
-                                    if (res.ok) {
-                                      setTasks(tasks.map(t => t.id === task.id ? { ...t, status: 'Completed', workflow: 'Published' } : t));
-                                      alert('Workflow approved. Promoted task status to Completed.');
-                                    }
-                                  } catch (e) {
-                                    console.error(e);
-                                  }
-                                }}
-                                className="w-full bg-[#10b981]/10 border border-[#10b981]/20 text-[#10b981] hover:bg-[#10b981]/20 font-bold text-[9px] py-1.5 rounded transition-all mt-2"
-                              >
-                                Approve Design (TL/Mgr)
-                              </button>
-                            )}
-                          </div>
-                        ))}
+                                    {/* Due Date */}
+                                    <td className="py-3 font-mono text-[10px] text-zinc-400">
+                                      {task.due_date ? new Date(task.due_date).toLocaleDateString([], {month: 'numeric', day: 'numeric', year: '2-digit'}) : '15/11/26'}
+                                    </td>
+
+                                    {/* Priority */}
+                                    <td className="py-3">
+                                      <span className={`text-[9px] font-bold uppercase ${
+                                        task.priority === 'High' ? 'text-rose-400' : 'text-zinc-500'
+                                      }`}>
+                                        {task.priority || 'Medium'}
+                                      </span>
+                                    </td>
+
+                                    {/* Status Badge */}
+                                    <td className="py-3">
+                                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase ${
+                                        task.status === 'Completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                                        task.status === 'In_Progress' ? 'bg-sky-500/10 border-sky-500/20 text-sky-400' :
+                                        task.status === 'In_Review' ? 'bg-violet-500/10 border-violet-500/20 text-violet-400' :
+                                        'bg-zinc-800 border-zinc-700 text-zinc-500'
+                                      }`}>
+                                        {task.status.replace('_', ' ')}
+                                      </span>
+                                    </td>
+
+                                    {/* Comments / Actions */}
+                                    <td className="py-3 text-right pr-4" onClick={(e) => e.stopPropagation()}>
+                                      <div className="flex items-center justify-end space-x-2">
+                                        {task.status === 'In_Review' && (
+                                          <button 
+                                            onClick={async () => {
+                                              try {
+                                                const res = await fetch(`http://localhost:3001/api/v1/tasks/${task.id}`, {
+                                                  method: 'PUT',
+                                                  headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': `Bearer ${token}`
+                                                  },
+                                                  body: JSON.stringify({ status: 'Completed', workflow: 'Published' })
+                                                });
+                                                if (res.ok) {
+                                                  setTasks(tasks.map(t => t.id === task.id ? { ...t, status: 'Completed', workflow: 'Published' } : t));
+                                                  alert('Workflow approved. Promoted task status to Completed.');
+                                                  fetchBackendData(token);
+                                                }
+                                              } catch (err) {
+                                                console.error(err);
+                                              }
+                                            }}
+                                            className="bg-[#10b981]/10 border border-[#10b981]/20 text-[#10b981] hover:bg-[#10b981]/20 font-bold text-[9px] py-1 px-2.5 rounded-lg transition-all"
+                                          >
+                                            Approve Design
+                                          </button>
+                                        )}
+                                        <button 
+                                          onClick={() => setSelectedNotificationTask(task)}
+                                          className="text-zinc-500 hover:text-zinc-300 px-1 py-1"
+                                          title="View Scope Details"
+                                        >
+                                          <FileText className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        )}
                       </div>
+
+                      {/* Add Task Button at bottom of group */}
+                      <button 
+                        onClick={() => {
+                          setNewTaskPriority(group.label === 'COMPLETE' ? 'Medium' : group.label === 'IN PROGRESS' ? 'High' : 'Medium');
+                          setShowCreateTaskModal(true);
+                        }}
+                        className="flex items-center space-x-1.5 text-zinc-500 hover:text-violet-400 text-[10px] font-bold pl-4 py-1.5 transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add Task</span>
+                      </button>
                     </div>
                   );
                 })}
