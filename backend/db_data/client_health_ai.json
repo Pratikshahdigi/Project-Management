@@ -1,0 +1,22 @@
+[
+  {
+    "id": "health-acme-id",
+    "client_id": "client-acme-id",
+    "engagement_score": 90,
+    "response_score": 85,
+    "renewal_probability": 95,
+    "client_risk_score": 5,
+    "profitability_score": 80,
+    "growth_score": 90
+  },
+  {
+    "id": "health-1781786999242",
+    "client_id": "client-1781786999237",
+    "engagement_score": 80,
+    "response_score": 80,
+    "renewal_probability": 85,
+    "client_risk_score": 15,
+    "profitability_score": 75,
+    "growth_score": 80
+  }
+]

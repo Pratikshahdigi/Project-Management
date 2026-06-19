@@ -1,0 +1,150 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: agency-os-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: agency_admin
+      POSTGRES_PASSWORD: secure_db_password
+      POSTGRES_DB: agency_os
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - agency-network
+
+  # 2. Redis Caching & Locks
+  redis:
+    image: redis:7-alpine
+    container_name: agency-os-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - agency-network
+
+  # 3. RabbitMQ Message Queue (Meta API worker posting)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: agency-os-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
+    networks:
+      - agency-network
+
+  # 4. MinIO S3 File Storage (Google Drive Alternative)
+  minio:
+    image: minio/minio:RELEASE.2023-05-18T00-05-36Z
+    container_name: agency-os-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio_admin
+      MINIO_ROOT_PASSWORD: minio_secure_password
+    volumes:
+      - miniodata:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - agency-network
+
+  # 5. ChromaDB (Local AI Vector DB)
+  chromadb:
+    image: chromadb/chroma:0.4.15
+    container_name: agency-os-chromadb
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadata:/chroma/data
+    networks:
+      - agency-network
+
+  # 6. Ollama (Local LLM Llama3/Qwen Service)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: agency-os-ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollamadata:/root/.ollama
+    # GPU support (optional, uncomment in production if running on Linux with NVIDIA runtime)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    networks:
+      - agency-network
+
+  # 7. NestJS Backend Application
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agency-os-backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgresql://agency_admin:secure_db_password@postgres:5432/agency_os
+      - REDIS_URL=redis://redis:6379
+      - MINIO_ENDPOINT=minio
+      - MINIO_ACCESS_KEY=minio_admin
+      - MINIO_SECRET_KEY=minio_secure_password
+      - OLLAMA_URL=http://ollama:11434
+      - JWT_SECRET=super-secure-jwt-key
+      - JWT_REFRESH_SECRET=super-secure-refresh-key
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - minio
+      - ollama
+      - chromadb
+    networks:
+      - agency-network
+
+  # 8. Next.js Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agency-os-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3001/api/v1
+    depends_on:
+      - backend
+    networks:
+      - agency-network
+
+volumes:
+  pgdata:
+  redisdata:
+  rabbitdata:
+  miniodata:
+  chromadata:
+  ollamadata:
+
+networks:
+  agency-network:
+    driver: bridge

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "client-acme-id",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "business_name": "Acme Corporates Inc",
+    "contact_name": "John Doe",
+    "mobile": "+1234567890",
+    "whatsapp": "+1234567890",
+    "email": "john@acme.com",
+    "website": "https://acme.com",
+    "facebook_page": "https://facebook.com/acme",
+    "instagram_profile": "https://instagram.com/acme",
+    "linkedin_company": "https://linkedin.com/company/acme",
+    "youtube_channel": "https://youtube.com/c/acme",
+    "google_business_profile": "Acme Corp Google Business",
+    "meta_business_account": "meta-acme-998",
+    "ad_account_ids": [
+      "act_9812903",
+      "act_1092801"
+    ],
+    "monthly_package": "Diamond Performance Tier",
+    "contract_start_date": "2026-01-01",
+    "contract_end_date": "2026-12-31",
+    "monthly_budget": 15000,
+    "lead_source": "Google Search Ads",
+    "notes": "Premium client expecting high content frequency and weekly AI summary updates."
+  },
+  {
+    "id": "client-1781786999237",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "business_name": "Test Corp",
+    "contact_name": "John Doe",
+    "mobile": "",
+    "whatsapp": "",
+    "email": "info@client.com",
+    "website": "",
+    "facebook_page": "",
+    "instagram_profile": "",
+    "linkedin_company": "",
+    "youtube_channel": "",
+    "google_business_profile": "",
+    "meta_business_account": "",
+    "ad_account_ids": [],
+    "monthly_package": "Premium Tier",
+    "contract_start_date": "2026-06-18",
+    "contract_end_date": "2027-06-18",
+    "monthly_budget": 5000,
+    "lead_source": "Direct",
+    "notes": ""
+  }
+]

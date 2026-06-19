@@ -1,0 +1,104 @@
+erDiagram
+    tenants ||--o{ users : "has"
+    tenants ||--o{ clients : "owns"
+    tenants ||--o{ tasks : "houses"
+    tenants ||--o{ social_posts : "manages"
+    tenants ||--o{ sales_leads : "tracks"
+    tenants ||--o{ audit_logs : "records"
+
+    users ||--o{ team_members : "belongs_to"
+    teams ||--o{ team_members : "groups"
+    departments ||--o{ teams : "contains"
+
+    clients ||--o{ client_users : "mapped_to"
+    users ||--o{ client_users : "mapped_to"
+
+    clients ||--|| client_health_ai : "has_health_indicators"
+    clients ||--o{ tasks : "has_tasks"
+    clients ||--o{ social_posts : "has_scheduled_posts"
+
+    users ||--o{ tasks : "assigned_to"
+    users ||--o{ employee_work_logs : "has_logs"
+    users ||--o{ employee_screens : "has_screenshot_logs"
+    users ||--|| employee_consent : "has_consent_status"
+
+    users ||--o{ sales_leads : "assignee_of"
+    users ||--o{ payroll_records : "receives_slips"
+    users ||--o{ audit_logs : "triggers"
+    users ||--o{ social_posts : "creates"
+
+    departments {
+        uuid id PK
+        uuid tenant_id FK
+        string name
+        timestamp created_at
+    }
+
+    teams {
+        uuid id PK
+        uuid department_id FK
+        string name
+        uuid lead_id FK
+        timestamp created_at
+    }
+
+    clients {
+        uuid id PK
+        uuid tenant_id FK
+        string business_name
+        string contact_name
+        string email
+        string mobile
+        string whatsapp
+        string website
+        string monthly_package
+        numeric monthly_budget
+        date contract_start_date
+        date contract_end_date
+    }
+
+    client_health_ai {
+        uuid id PK
+        uuid client_id FK
+        int engagement_score
+        int response_score
+        int renewal_probability
+        int client_risk_score
+        int profitability_score
+        int growth_score
+    }
+
+    tasks {
+        uuid id PK
+        uuid tenant_id FK
+        uuid client_id FK
+        string title
+        string description
+        string status
+        string design_workflow
+        uuid assignee_id FK
+        uuid reporter_id FK
+        timestamp due_date
+    }
+
+    social_posts {
+        uuid id PK
+        uuid tenant_id FK
+        uuid client_id FK
+        string content
+        string array media_urls
+        string array platforms
+        string status
+        timestamp scheduled_time
+        uuid escalated_task_id FK
+    }
+
+    employee_work_logs {
+        uuid id PK
+        uuid user_id FK
+        date date
+        timestamp login_time
+        timestamp logout_time
+        int work_time_seconds
+        int productivity_score
+    }

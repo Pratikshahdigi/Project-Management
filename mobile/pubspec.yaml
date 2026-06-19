@@ -1,0 +1,23 @@
+name: agency_os_mobile
+description: Enterprise Mobile Client for the Self-Hosted Agency Operating System.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  flutter_secure_storage: ^9.0.0
+  provider: ^6.0.5
+  fl_chart: ^0.65.0
+  lucide_icons: ^0.294.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

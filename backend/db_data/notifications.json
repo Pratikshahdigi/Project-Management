@@ -1,0 +1,29 @@
+[
+  {
+    "id": "notification-1781784806409-s4ttjt31e",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "user_id": "user-designer-id",
+    "message": "You have been assigned a new design task: Design Facebook Ads Graphic",
+    "type": "design_request",
+    "read": false,
+    "created_at": "2026-06-18T12:13:26.410Z"
+  },
+  {
+    "id": "notification-1781785290286-itnl8ad9y",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "user_id": "user-designer-id",
+    "message": "You have been assigned a new design task: Develop AI Integration",
+    "type": "design_request",
+    "read": false,
+    "created_at": "2026-06-18T12:21:30.286Z"
+  },
+  {
+    "id": "notification-1781785316763-llr6a5ddc",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "user_id": "user-ceo-id",
+    "message": "Your requested design asset 'Develop AI Integration' has been approved. You can now publish the social media post.",
+    "type": "design_approved",
+    "read": false,
+    "created_at": "2026-06-18T12:21:56.763Z"
+  }
+]

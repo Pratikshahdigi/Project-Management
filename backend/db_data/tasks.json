@@ -1,0 +1,50 @@
+[
+  {
+    "id": "task-1",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "client_id": "client-acme-id",
+    "title": "Design Hero Banner Graphic",
+    "description": "Create high definition social media posts and landing page headers.",
+    "status": "Completed",
+    "design_workflow": "Published",
+    "priority": "High",
+    "assignee_id": "user-designer-id",
+    "reporter_id": "user-manager-id",
+    "due_date": "2026-06-18T10:03:51.451Z",
+    "estimated_minutes": 180,
+    "actual_minutes": 0,
+    "updated_at": "2026-06-16T12:06:15.459Z"
+  },
+  {
+    "id": "task-2",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "client_id": "client-acme-id",
+    "title": "Optimize Google Ads Campaign",
+    "description": "A/B test advertising headlines and prune low-performing search terms.",
+    "status": "In_Progress",
+    "design_workflow": "Assigned",
+    "priority": "Urgent",
+    "assignee_id": "user-manager-id",
+    "reporter_id": "user-ceo-id",
+    "due_date": "2026-06-17T10:03:51.452Z",
+    "estimated_minutes": 120,
+    "actual_minutes": 45
+  },
+  {
+    "id": "task-1781784806406",
+    "tenant_id": "tenant-1111-1111-1111-1111",
+    "client_id": "client-acme-id",
+    "title": "Design Facebook Ads Graphic",
+    "description": "",
+    "status": "Todo",
+    "design_workflow": "Assigned",
+    "priority": "Medium",
+    "assignee_id": "user-tl-id",
+    "reporter_id": "user-ceo-id",
+    "due_date": "2026-06-20T12:13:26.406Z",
+    "estimated_minutes": 120,
+    "actual_minutes": 0,
+    "created_at": "2026-06-18T12:13:26.406Z",
+    "updated_at": "2026-06-18T12:31:51.119Z"
+  }
+]
